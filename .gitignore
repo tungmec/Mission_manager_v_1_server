@@ -2,3 +2,5 @@
 .env
 !env.js
 node_modules/
+src/db/migration/
+src/db/seed/

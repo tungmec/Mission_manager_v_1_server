@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors'
 import {authRouter} from './modules/auth/auth.routes.js';
+import {managerUserRouter} from './modules/managerUsers/managerUser.routes.js';
 
 
 const app = express();
@@ -23,5 +24,6 @@ app.get('/health', (req, res, next) => {
 })
 
 app.use('/api/auth', authRouter);
+app.use('/api/manageruser/', managerUserRouter);
 
 export default app;

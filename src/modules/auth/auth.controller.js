@@ -1,4 +1,4 @@
-import {getMainUserByName, createNewMainUser, getAllMainUser} from './auth.service.js';
+import {getMainUserByName, createNewMainUser, getAllMainUser, getSubUserByName} from './auth.service.js';
 import express from 'express';
 import bcrypt from 'bcrypt';
 import {signAccessToken, verifyAccessToken} from '../../utils/jwt.js';
@@ -77,12 +77,64 @@ export const loginMainUser = async (req, res, next) => {
 
 }
 
+
+// Login function for sub user:
+export const loginSubUser = async (req, res, next) => {
+    const {userName, password} = req.body;
+    const logedInUser = await getSubUserByName(userName);
+    if (logedInUser === null) {
+        return res.status(404).json({
+            success:false,
+            msg: "User not exist"
+        })
+    }
+
+    const isCorectPassword = await bcrypt.compare(password, logedInUser.password_hash);
+    if (!isCorectPassword) {
+        return res.status(400).json({
+            success:false,
+            msg: "Invalid password -> Fail to login"
+        })
+    }
+
+    const token = signAccessToken({
+        id: logedInUser.id,
+        user_name: logedInUser.user_name,
+        user_type: logedInUser.user_type
+    });
+
+    return res.status(200).json({
+        success: true,
+        msg: "Login OK",
+        token: token,
+        data: 
+        {
+            id: logedInUser.id,
+            user_name: logedInUser.user_name,
+            user_type: logedInUser.user_type
+        }
+    });
+
+}
 // Get all manager users (only for test):
 export const loadAllMainUser = async (req, res, next) => {
     const allUser = await getAllMainUser();
     return res.json({
         success:true,
         msg: "Load all manager users OK",
+        user:req.user,
         data: allUser
     })
+}
+
+// Get Auth Me function:
+
+export const loadMe = async (req, res, next) => {
+    return res.status(200).json({
+        success:true,
+        msg: "get Me OK",
+        data: req.user
+
+    })
+
 }

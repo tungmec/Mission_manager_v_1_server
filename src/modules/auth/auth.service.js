@@ -65,3 +65,25 @@ export const createNewMainUser = async (userName, passwordHash) => {
     }
    
 }
+
+// get sub user by name and manager ID:
+
+export const getSubUserByName = async (subUserName) => {
+    try {
+        const {rows} = await query(
+            `
+                select *
+                from sub_users
+                where user_name = $1
+            `
+            ,[subUserName]
+        );
+
+        return rows?.[0]??null;
+
+    } catch (err) {
+        console.log("Database fault: Fail to load sub_user by name ");
+        console.log(err.message);
+        return null;
+    }
+}
