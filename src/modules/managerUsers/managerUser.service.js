@@ -45,7 +45,6 @@ export const createSubUser = async(managerId, subUserName, password, roleId) => 
                 values 
                 ($1, $2, $3, $4)
                 returning id, manager_id, user_name, user_type, user_role_id, create_at
-
             `
             ,[managerId, subUserName, password_hash, roleId]
         );
